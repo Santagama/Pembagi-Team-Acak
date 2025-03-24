@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembagi Tim Acak</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            text-align: center;
+        }
+        header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        textarea, input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        textarea {
+            height: 120px;
+            resize: none;
+        }
+        input, select {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        button {
+            background: #ff8c00;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #ff6b00;
+        }
+        .output {
+            margin-top: 1.5rem;
+            text-align: left;
+        }
+        .team {
+            margin-bottom: 1rem;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>Pembagi Tim Acak</header>
+    <div class="container">
+        <p>Masukkan nama peserta (pisahkan satu per baris):</p>
+        <textarea id="namesInput" placeholder="contoh: Hanan, Udin, Asep, dst..."></textarea>
+        <p>Masukkan jumlah tim:</p>
+        <input type="number" id="teamCount" min="2" placeholder="contoh: 2">
+        <button onclick="generateTeams()">Bagi Tim</button>
+        <div class="output" id="output"></div>
+    </div>
+    <script>
+        function generateTeams() {
+            const namesInput = document.getElementById("namesInput").value.trim();
+            const teamCount = parseInt(document.getElementById("teamCount").value);
+            const output = document.getElementById("output");
+            
+            if (!namesInput || !teamCount || teamCount < 1) {
+                output.innerHTML = '<p style="color: red;">Masukkan nama peserta dan jumlah tim yang valid.</p>';
+                return;
+            }
+
+            const names = namesInput.split('\n').map(name => name.trim()).filter(name => name !== '');
+            if (teamCount > names.length) {
+                output.innerHTML = '<p style="color: red;">Jumlah tim tidak boleh lebih dari jumlah peserta.</p>';
+                return;
+            }
+
+            // Shuffle names
+            for (let i = names.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [names[i], names[j]] = [names[j], names[i]];
+            }
+
+            // Create teams
+            const teams = Array.from({ length: teamCount }, () => []);
+            names.forEach((name, index) => {
+                teams[index % teamCount].push(name);
+            });
+
+            // Display teams
+            output.innerHTML = '';
+            teams.forEach((team, index) => {
+                const teamDiv = document.createElement('div');
+                teamDiv.className = 'team';
+                teamDiv.innerHTML = `<strong>Tim ${index + 1}:</strong><br>${team.join('<br>')}`;
+                output.appendChild(teamDiv);
+            });
+        }
+    </script>
+</body>
+</html>
